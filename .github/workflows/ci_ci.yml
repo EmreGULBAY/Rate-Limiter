@@ -1,0 +1,25 @@
+name: rate-limiter
+on:
+  push:
+    branches:
+      - main
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Log into ghcr.io registry
+        run: echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
+
+      - name: Build docker image
+        run: docker build -t ghcr.io/emregulbay/rate-limiter:v${{ github.run_number }} .
+
+      - name: Tag docker image latest
+        run: docker tag ghcr.io/emregulbay/rate-limiter:v${{ github.run_number }} ghcr.io/emregulbay/rate-limiter:latest
+
+      - name: Push docker image
+        run: |
+          docker push ghcr.io/emregulbay/rate-limiter:v${{ github.run_number }}
+          docker push ghcr.io/emregulbay/rate-limiter:latest
