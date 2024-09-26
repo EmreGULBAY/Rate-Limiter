@@ -4,10 +4,6 @@ import { Container } from "./Infrastructure/DI/Container";
 import { RateLimitController } from "./Controllers/RateLimitController";
 import { RateLimitService } from "./Services/RateLimitService";
 import { RedisRateLimitRepository } from "./Infrastructure/Redis/RedisRateLimitRepository";
-import {
-  RateLimitOptions,
-  defaultRateLimitConfig,
-} from "./Config/RateLimitOptions";
 
 async function main() {
   const app = express();
