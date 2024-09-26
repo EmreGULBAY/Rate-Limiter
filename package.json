@@ -1,0 +1,28 @@
+{
+  "name": "rate-limiter",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "ts-node src/server.ts"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@types/node-fetch": "^2.6.11",
+    "dotenv": "^16.4.5",
+    "express": "^4.21.0",
+    "ioredis": "^5.4.1",
+    "mongodb": "^6.9.0",
+    "node-fetch": "^2.7.0",
+    "redis": "^4.7.0",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.6.2"
+  },
+  "devDependencies": {
+    "@types/express": "^5.0.0",
+    "@types/ioredis": "^5.0.0"
+  }
+}
