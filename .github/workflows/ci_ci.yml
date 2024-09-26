@@ -21,6 +21,31 @@ jobs:
       - name: Build docker image
         run: docker build -t ghcr.io/emregulbay/rate-limiter:v${{ github.run_number }} .
 
+      - name: Run docker container
+        run: |
+          docker run -d --name rate-limiter \
+            --network host \
+            -e REDIS_URI="${{ secrets.REDIS_URI }}" \
+            ghcr.io/emregulbay/rate-limiter:v${{ github.run_number }}
+
+          sleep 10
+
+          docker logs rate-limiter
+
+      - name: Verify Redis Connection
+        run: |
+          docker exec rate-limiter node -e "
+            const Redis = require('ioredis');
+            const client = new Redis(process.env.REDIS_URI);
+            client.ping().then(result => {
+              console.log('Redis connection successful:', result);
+              process.exit(0);
+            }).catch(error => {
+              console.error('Redis connection failed:', error);
+              process.exit(1);
+            });
+          "
+
       - name: Tag docker image latest
         run: docker tag ghcr.io/emregulbay/rate-limiter:v${{ github.run_number }} ghcr.io/emregulbay/rate-limiter:latest
 
