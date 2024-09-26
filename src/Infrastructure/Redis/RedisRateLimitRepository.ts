@@ -1,6 +1,6 @@
-import { Redis } from 'ioredis';
-import { IRateLimitRepository } from '../../Interfaces/IRateLimitRepository';
-import { RateLimit } from '../../Models/RateLimit';
+import { Redis } from "ioredis";
+import { IRateLimitRepository } from "../../Interfaces/IRateLimitRepository";
+import { RateLimit } from "../../Models/RateLimit";
 
 export class RedisRateLimitRepository implements IRateLimitRepository {
   private redis: Redis;
@@ -15,15 +15,18 @@ export class RedisRateLimitRepository implements IRateLimitRepository {
     return {
       key,
       count: parseInt(data.count),
-      resetTime: parseInt(data.resetTime)
+      resetTime: parseInt(data.resetTime),
     };
   }
 
   async set(rateLimit: RateLimit): Promise<void> {
     await this.redis.hmset(`ratelimit:${rateLimit.key}`, {
       count: rateLimit.count,
-      resetTime: rateLimit.resetTime
+      resetTime: rateLimit.resetTime,
     });
-    await this.redis.pexpire(`ratelimit:${rateLimit.key}`, rateLimit.resetTime - Date.now());
+    await this.redis.pexpire(
+      `ratelimit:${rateLimit.key}`,
+      rateLimit.resetTime - Date.now()
+    );
   }
 }

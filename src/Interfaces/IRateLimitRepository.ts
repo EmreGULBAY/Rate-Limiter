@@ -1,4 +1,4 @@
-import { RateLimit } from '../Models/RateLimit';
+import { RateLimit } from "../Models/RateLimit";
 
 export interface IRateLimitRepository {
   get(key: string): Promise<RateLimit | null>;

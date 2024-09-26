@@ -1,29 +1,34 @@
-import { Request, Response, NextFunction } from 'express';
-import { RateLimitService } from '../Services/RateLimitService';
-import { RateLimitOptions } from '../Config/RateLimitOptions';
+import { Request, Response, NextFunction } from "express";
+import { RateLimitService } from "../Services/RateLimitService";
+import {
+  RateLimitOptions,
+  defaultRateLimitConfig,
+} from "../Config/RateLimitOptions";
 
 export class RateLimitController {
   private useCase: RateLimitService;
-  private options: RateLimitOptions;
 
-  constructor(useCase: RateLimitService, options: RateLimitOptions) {
+  constructor(useCase: RateLimitService) {
     this.useCase = useCase;
-    this.options = options;
   }
 
-  middleware(customOptions?: Partial<RateLimitOptions>) {
-    return async (req: Request, res: Response, next: NextFunction) => {
-      const options = { ...this.options, ...customOptions };
+  middleware(options: RateLimitOptions) {
+    const fullOptions = { ...defaultRateLimitConfig, ...options };
 
-      if (options.skip && options.skip(req)) {
+    return async (req: Request, res: Response, next: NextFunction) => {
+      if (fullOptions.skip && fullOptions.skip(req)) {
         return next();
       }
 
-      const ip = options.keyGenerator ? options.keyGenerator(req) : req.ip;
-      const isLimited = await this.useCase.isRateLimited(ip!);
+      const ip = fullOptions.keyGenerator
+        ? fullOptions.keyGenerator(req)
+        : req.ip;
+      console.log("Rate limit key:", ip);
+
+      const isLimited = await this.useCase.isRateLimited(ip!, fullOptions);
 
       if (isLimited) {
-        res.status(options.statusCode || 429).send(options.message || 'Too many requests');
+        res.status(fullOptions.statusCode!).send(fullOptions.message);
       } else {
         next();
       }

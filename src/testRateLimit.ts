@@ -1,6 +1,6 @@
-import fetch from 'node-fetch';
+import fetch from "node-fetch";
 
-const BASE_URL = 'http://localhost:3000';
+const BASE_URL = "http://localhost:3000";
 const TOTAL_REQUESTS = 150;
 const INTERVAL_MS = 100;
 
@@ -17,14 +17,16 @@ async function sendRequest(requestNumber: number) {
 }
 
 async function runTest() {
-  console.log(`Starting rate limit test: ${TOTAL_REQUESTS} requests, ${INTERVAL_MS}ms apart`);
-  
+  console.log(
+    `Starting rate limit test: ${TOTAL_REQUESTS} requests, ${INTERVAL_MS}ms apart`
+  );
+
   for (let i = 1; i <= TOTAL_REQUESTS; i++) {
     await sendRequest(i);
-    await new Promise(resolve => setTimeout(resolve, INTERVAL_MS));
+    await new Promise((resolve) => setTimeout(resolve, INTERVAL_MS));
   }
-  
-  console.log('Test completed');
+
+  console.log("Test completed");
 }
 
 runTest();
